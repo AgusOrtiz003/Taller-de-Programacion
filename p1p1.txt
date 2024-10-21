@@ -1,0 +1,47 @@
+programa p1p1
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso recorrerAvenida(ES f:numero;ES vacias:numero)
+  comenzar
+    mientras(PosCa<100)
+      si(HayFlorEnLaEsquina)
+        juntarFlores(f)
+      sino
+        vacias:=vacias+1
+      mover
+    si(HayFlorEnLaEsquina)
+      juntarFlores(f)
+    sino
+      vacias:=vacias+1
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot robot1
+  variables
+    f: numero
+    callesVacias:numero
+  comenzar
+    f:=0
+    callesVacias:=0
+    recorrerAvenida(f,callesVacias)
+    Informar('Flores',f)
+    Informar('Calles Vacias',callesVacias)
+  fin
+variables
+  R_info: robot1
+  R2:robot1
+  R3:robot1
+comenzar
+  AsignarArea(R_info,ciudad)
+  AsignarArea(R2,ciudad)
+  AsignarArea(R3,ciudad)
+  Iniciar(R_info,1,1)
+  Iniciar(R2,3,1)
+  Iniciar(R3,5,1)
+fin
