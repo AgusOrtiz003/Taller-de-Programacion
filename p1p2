@@ -1,0 +1,67 @@
+programa p2p2
+procesos
+  proceso juntarPapeles(ES cant:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      cant:=cant+1
+  fin  
+  proceso recorrerLado(ES paps:numero)
+  comenzar
+    repetir 20
+      mover
+      juntarPapeles(paps)
+    Informar(paps)
+  fin
+  
+areas
+  ciudad: AreaC(10,10,30,30)
+robots
+  robot robot1
+  variables
+    paps:numero
+  comenzar
+    paps:=0
+    recorrerLado(paps)
+  fin
+  robot robot2
+  variables
+    paps:numero
+  comenzar
+    paps:=0
+    derecha
+    recorrerLado(paps)
+  fin
+  robot robot3
+  variables
+    paps:numero
+  comenzar
+    paps:=0
+    repetir 2
+      derecha
+    recorrerLado(paps)
+  fin
+  robot robot4
+  variables
+    paps:numero
+  comenzar
+    paps:=0
+    repetir 3
+      derecha
+    recorrerLado(paps)
+  fin  
+variables
+  R_info: robot1
+  r2:robot2
+  r3:robot3
+  r4:robot4
+comenzar
+  AsignarArea(R_info, ciudad)
+  AsignarArea(r2,ciudad)
+  AsignarArea(r3,ciudad)
+  AsignarArea(r4,ciudad)
+  Iniciar(R_info, 10,10)
+  Iniciar(r2,10,30)
+  Iniciar(r3,30,30)
+  Iniciar(r4,30,10)
+fin
