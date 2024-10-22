@@ -1,0 +1,69 @@
+programa p1p3
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso contarBasura (ES f:numero;ES p:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel      
+  fin
+  proceso escalon (E esc:numero;ES f:numero;ES p:numero)
+  comenzar
+    repetir esc
+      contarBasura(f,p)
+      mover
+    derecha
+    repetir esc
+      contarBasura(f,p)
+      mover
+    izquierda  
+  fin
+  proceso escalera(ES cantCalles: numero)
+  variables
+    esc:numero
+    f:numero
+    p:numero
+  comenzar
+    esc:=1
+    repetir 4
+      f:=0
+      p:=0
+      escalon(esc,f,p)
+      esc:=esc+1
+      si(p=(f+1))
+        cantCalles:=cantCalles+1
+  fin
+areas
+  ciudad: AreaC (12,6,32,24)
+robots
+  robot robot1
+  variables
+    cant:numero
+  comenzar
+    cant:=0
+    escalera(cant)
+    Informar(cant)
+  fin
+variables
+  R_info: robot1
+  r2:robot1
+  r3:robot1
+comenzar
+  AsignarArea(R_info, ciudad)
+  AsignarArea(r2,ciudad)
+  AsignarArea(r3,ciudad)
+  Iniciar(R_info, 12,14)
+  Iniciar(r2,17,10)
+  Iniciar(r3,22,6)
+fin
