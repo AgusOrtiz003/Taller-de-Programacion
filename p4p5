@@ -1,0 +1,80 @@
+programa p4p5
+procesos
+  proceso recorrerEsquinasPapeles(E esquinas:numero)
+  comenzar
+    repetir esquinas
+      mientras(HayPapelEnLaEsquina)
+        tomarPapel
+      mover
+    Pos(PosAv,(PosCa-esquinas))
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+  proceso recorrerEsquinasFlores(E esquinas:numero)
+  comenzar
+    repetir esquinas
+      mientras(HayFlorEnLaEsquina)
+        tomarFlor
+      mover
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+  fin
+  proceso recorrerAreaFlores(E esquinas:numero)
+  comenzar
+    recorrerEsquinasFlores(esquinas)
+    Pos((PosAv-esquinas),(PosCa+5))
+    recorrerEsquinasFlores(esquinas)
+  fin
+  proceso recorrerAreaPapeles(E esquinas:numero)
+  comenzar
+    recorrerEsquinasPapeles(esquinas)
+    Pos((PosAv+5),PosCa)
+    recorrerEsquinasPapeles(esquinas)
+  fin
+areas
+  area1:AreaP(1,75,15,75)
+  area2:AreaP(1,80,15,80)
+  area3:AreaP(75,80,75,100)
+  area4:AreaP(80,80,80,100)
+  area5:AreaP(70,15,100,15)
+  area6:AreaP(70,10,100,10)
+  area7:AreaP(10,1,10,10)
+  area8:AreaP(15,1,15,10)
+robots
+  robot Florero15
+  comenzar
+    derecha
+    recorrerAreaFlores(14)
+  fin
+  robot Florero30
+  comenzar
+    derecha
+    recorrerAreaFlores(30)
+  fin
+  robot Papelero20
+  comenzar
+    recorrerAreaPapeles(20)
+  fin
+  robot Papelero10
+  comenzar
+    recorrerAreaPapeles(9)
+  fin
+variables
+  R_info: Florero15
+  r2:Papelero20
+  r3:Florero30
+  r4:Papelero10
+comenzar
+  AsignarArea(R_info,area1)
+  AsignarArea(R_info,area2)
+  AsignarArea(r2,area3)
+  AsignarArea(r2,area4)
+  AsignarArea(r3,area5)
+  AsignarArea(r3,area6)
+  AsignarArea(r4,area7)
+  AsignarArea(r4,area8)
+  Iniciar(R_info, 1,75)
+  Iniciar(r2,75,80)
+  Iniciar(r3,70,10)
+  Iniciar(r4,10,1)
+fin
