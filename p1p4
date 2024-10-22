@@ -1,0 +1,67 @@
+programa p1p4
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+  fin
+  proceso recorrerAreaImpar(ES f:numero)
+  comenzar
+    repetir 24
+      juntarFlores(f)
+      repetir 99
+        mover
+        juntarFlores(f)
+      Pos((PosAv+1),1)     
+  fin
+  proceso recorrerAreaPar(ES p:numero)
+  comenzar
+    repetir 24
+      juntarPapeles(p)
+      repetir 99
+        mover
+        juntarPapeles(p)
+      Pos((PosAv+1),1)
+  fin
+areas
+  area1: AreaP(1,1,25,100)
+  area2: AreaP(26,1,50,100)
+  area3: AreaP(51,1,75,100)
+  area4: AreaP(76,1,100,100)
+robots
+  robot Florero
+  variables
+    f:numero
+  comenzar
+    f:=0
+    recorrerAreaImpar(f)
+    Pos((PosAv+26),1)
+    recorrerAreaImpar(f)
+  fin
+  robot Papelero
+  variables
+    p:numero
+  comenzar
+    p:=0
+    recorrerAreaPar(p)
+    Pos((PosAv+26),1)
+    recorrerAreaPar(p)
+  fin
+variables
+  R_info:Florero
+  r2:Papelero
+comenzar
+  AsignarArea(R_info,area1)
+  AsignarArea(R_info,area3)
+  AsignarArea(r2,area2)
+  AsignarArea(r2,area4)
+  Iniciar(R_info,1,1)
+  Iniciar(r2,26,1)  
+fin
