@@ -1,4 +1,4 @@
-programa p4p5
+programa p1p5
 procesos
   proceso recorrerEsquinasPapeles(E esquinas:numero)
   comenzar
