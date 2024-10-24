@@ -1,0 +1,66 @@
+programa p2p4
+procesos
+  proceso limpiarEsquina(ES f:numero;ES p:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+  fin
+robots
+  robot fiscal
+  variables
+    maxtotal:numero
+    total:numero
+    maxid:numero
+    id:numero
+  comenzar
+    accesosRestantes:=10
+    maxtotal:=-1
+    id:=1
+    EnviarMensaje(id,r1)
+    id:=id+1
+    EnviarMensaje(id,r2)
+    id:=id+1
+    EnviarMensaje(id,r3)
+    id:=id+1
+    EnviarMensaje(id,r4)
+    repetir 10
+      Random(id,1,4)
+      si(id=1)
+        EnviarMensaje(true,r1)
+        RecibirMensaje(seguimos,r1)
+      sino
+        si(id=2)
+          EnviarMensaje(true,r2)
+          RecibirMensaje(seguimos,r2)
+        sino
+          si(id=3)
+            EnviarMensaje(true,r3)
+            RecibirMensaje(seguimos,r3)
+          sino
+            EnviarMensaje(true,r4)
+            RecibirMensaje(seguimos,r4)
+    EnviarMensaje(false,r1)
+    EnviarMensaje(false,r2)
+    EnviarMensaje(false,r3)
+    EnviarMensaje(false,r4)
+    repetir 4
+      RecibirMensaje(id,*)
+      si(id=1)
+        RecibirMensaje(total,r1)
+      sino
+        si(id=2)
+          RecibirMensaje(total,r2)
+        sino
+          si(id=3)
+            RecibirMensaje(total,r3)
+          sino
+              RecibirMensaje(total,r4)
+       si(total>maxtotal)
+         maxid:=id
+         maxtotal:=total
+    Informar('El ganador es el robot ',maxid)
+  fin    
