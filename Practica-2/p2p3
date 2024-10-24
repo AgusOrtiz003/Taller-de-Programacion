@@ -60,7 +60,7 @@ robots
     Pos((PosAv+11),PosCa)
     RecibirMensaje(p,A1)
     recorridoPapeles(p)
-    Informar('En todo el recorrido se juntaron las siguientes flores ',p)
+    Informar('En todo el recorrido se juntaron los siguientes papeles ',p)
   fin
   robot equipoB1
   variables
