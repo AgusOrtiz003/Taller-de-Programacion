@@ -1,0 +1,52 @@
+programa p2p1
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso recorrerArea(ES f:numero)
+  comenzar
+    repetir 9
+      juntarFlores(f)
+      mover
+    juntarFlores(f)
+  fin
+areas
+  area1:AreaP(1,1,1,10)
+  area2:AreaP(2,11,2,20)
+robots
+  robot robot1
+  variables
+    f:numero
+    f2:numero
+  comenzar
+    f:=0
+    recorrerArea(f)
+    EnviarMensaje(f,r2)
+    RecibirMensaje(f2,r2)
+    si(f>f2)
+      Informar('La diferencia es de ',(f-f2))
+  fin
+  robot robot2
+  variables
+    f:numero
+    f1:numero
+  comenzar
+    f:=0
+    recorrerArea(f)
+    EnviarMensaje(f,r1)
+    RecibirMensaje(f1,r1)
+    si(f>f1)
+      Informar('La diferencia es de ',(f-f1))
+  fin
+variables
+  r1:robot1
+  r2:robot2
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  Iniciar(r1, 1,1)
+  Iniciar(r2,2,11)
+fin
