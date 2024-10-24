@@ -1,0 +1,92 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa p2p2
+procesos
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso contarEsquina(ES cant:numero)
+  variables
+    f:numero
+    p:numero
+  comenzar
+    f:=0
+    p:=0
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+    repetir f
+      depositarFlor
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+    repetir p
+      depositarPapel
+    si(f>p)
+      cant:=cant+1
+  fin
+  proceso escalera(E alto:numero;ES cant:numero)
+  comenzar
+    repetir 4
+      contarEsquina(cant)  
+      derecha
+      mover
+      izquierda
+      repetir alto
+        contarEsquina(cant)
+        mover
+  fin
+areas
+  area1:AreaP(2,1,6,21)
+  area2:AreaP(7,1,11,21)
+  area3:AreaP(12,1,16,21)
+  areaJ:AreaP(1,1,1,1)
+robots
+  robot juntador
+  variables
+    cant:numero
+    alto:numero
+  comenzar
+    cant:=0
+    RecibirMensaje(alto,rJ)
+    escalera(alto,cant)
+    EnviarMensaje(cant,rJ)
+  fin
+  robot jefe
+  variables
+    alto:numero
+    total:numero
+    cant:numero
+  comenzar
+    total:=0
+    alto:=2
+    EnviarMensaje(alto,r1)
+    alto:=4
+    EnviarMensaje(alto,r2)
+    alto:=5
+    EnviarMensaje(alto,r3)
+    repetir 3
+      RecibirMensaje(cant,*)
+      total:=total+cant
+    Informar('El total es de ',total)
+  fin
+variables
+  r1:juntador
+  r2:juntador
+  r3:juntador
+  rJ:jefe
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(rJ,areaJ)
+  Iniciar(rJ, 1,1)
+  Iniciar(r1,2,1)
+  Iniciar(r2,7,1)
+  Iniciar(r3,12,1)
+fin
