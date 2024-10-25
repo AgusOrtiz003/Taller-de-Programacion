@@ -1,7 +1,13 @@
 programa p2p4
 procesos
-  proceso limpiarEsquina(ES f:numero;ES p:numero)
+  proceso limpiarEsquinaRandom(ES f:numero;ES p:numero)
+  variables
+    av:numero
+    ca:numero
   comenzar
+    Random(av,25,75)
+    Random(ca,25,75)
+    Pos(av,ca)
     mientras(HayFlorEnLaEsquina)
       tomarFlor
       f:=f+1
@@ -9,16 +15,8 @@ procesos
       tomarPapel
       p:=p+1
   fin
-robots
-  robot fiscal
-  variables
-    maxtotal:numero
-    total:numero
-    maxid:numero
-    id:numero
+  proceso identificarRobots(E id:numero)
   comenzar
-    accesosRestantes:=10
-    maxtotal:=-1
     id:=1
     EnviarMensaje(id,r1)
     id:=id+1
@@ -27,26 +25,32 @@ robots
     EnviarMensaje(id,r3)
     id:=id+1
     EnviarMensaje(id,r4)
-    repetir 10
-      Random(id,1,4)
-      si(id=1)
-        EnviarMensaje(true,r1)
-        RecibirMensaje(seguimos,r1)
+  fin
+  proceso permitirAcceso(E id:numero)
+  variables
+    aux:boolean
+  comenzar
+    aux:=(1=1)
+    si(id=1)
+      EnviarMensaje(aux,r1)
+      RecibirMensaje(aux,r1)
+    sino
+      si(id=2)
+        EnviarMensaje(aux,r2)
+        RecibirMensaje(aux,r2)
       sino
-        si(id=2)
-          EnviarMensaje(true,r2)
-          RecibirMensaje(seguimos,r2)
+        si(id=3)
+          EnviarMensaje(aux,r3)
+          RecibirMensaje(aux,r3)
         sino
-          si(id=3)
-            EnviarMensaje(true,r3)
-            RecibirMensaje(seguimos,r3)
-          sino
-            EnviarMensaje(true,r4)
-            RecibirMensaje(seguimos,r4)
-    EnviarMensaje(false,r1)
-    EnviarMensaje(false,r2)
-    EnviarMensaje(false,r3)
-    EnviarMensaje(false,r4)
+          EnviarMensaje(aux,r4)
+          RecibirMensaje(aux,r4)
+  fin
+  proceso recibirTotales(ES maxtotal:numero;ES maxid:numero)
+  variables
+    total:numero
+    id:numero
+  comenzar
     repetir 4
       RecibirMensaje(id,*)
       si(id=1)
@@ -58,9 +62,113 @@ robots
           si(id=3)
             RecibirMensaje(total,r3)
           sino
+            si(id=4)
               RecibirMensaje(total,r4)
-       si(total>maxtotal)
-         maxid:=id
-         maxtotal:=total
-    Informar('El ganador es el robot ',maxid)
-  fin    
+      si(total>maxtotal)
+        maxtotal:=total
+        maxid:=id
+  fin
+  proceso seleccionarGanador(E maxid:numero)
+  variables
+    aux:boolean
+  comenzar
+    aux:=(1=1)
+    si(maxid=1)
+      EnviarMensaje(aux,r1)
+      EnviarMensaje((~aux),r2)
+      EnviarMensaje((~aux),r3)
+      EnviarMensaje((~aux),r4)
+    sino
+      si(maxid=2)
+        EnviarMensaje((~aux),r1)
+        EnviarMensaje(aux,r2)
+        EnviarMensaje((~aux),r3)
+        EnviarMensaje((~aux),r4)
+      sino
+        si(maxid=3)
+          EnviarMensaje((~aux),r1)
+          EnviarMensaje((~aux),r2)
+          EnviarMensaje(aux,r3)
+          EnviarMensaje((~aux),r4)
+        sino
+          EnviarMensaje((~aux),r1)
+          EnviarMensaje((~aux),r2)
+          EnviarMensaje((~aux),r3)
+          EnviarMensaje(aux,r4)
+  fin
+  proceso indicarFinal
+  comenzar
+    EnviarMensaje((1<1),r1)
+    EnviarMensaje((1<1),r2)
+    EnviarMensaje((1<1),r3)
+    EnviarMensaje((1<1),r4)
+  fin
+areas
+  areaF:AreaP(1,1,1,1)
+  area1:AreaP(25,1,25,1)
+  area2:AreaP(30,1,30,1)
+  area3:AreaP(35,1,35,1)
+  area4:AreaP(40,1,40,1)
+  cuadrante:AreaPC(25,25,75,75)
+robots
+  robot fiscal
+  variables
+    maxtotal:numero
+    maxid:numero
+    id:numero
+  comenzar
+    maxtotal:=-1
+    identificarRobots(id)
+    repetir 10
+      Random(id,1,4)
+      permitirAcceso(id)
+    indicarFinal
+    recibirTotales(maxtotal,maxid)
+    seleccionarGanador(maxid)
+  fin
+  robot recolector
+  variables
+    f:numero
+    p:numero
+    ca:numero
+    av:numero
+    id:numero
+    aux:boolean
+  comenzar
+    av:=PosAv
+    ca:=PosCa
+    RecibirMensaje(id,rF)
+    RecibirMensaje(aux,rF)
+    mientras(aux)
+      limpiarEsquinaRandom(f,p)
+      Pos(av,ca)
+      EnviarMensaje(aux,rF)
+      RecibirMensaje(aux,rF)
+    EnviarMensaje(id,rF)
+    EnviarMensaje((f+p),rF)
+    RecibirMensaje(aux,rF)
+    si(aux)
+      Pos(50,50)
+  fin
+variables
+  r1:recolector
+  r2:recolector
+  r3:recolector
+  r4:recolector
+  rF:fiscal
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(r4,area4)
+  AsignarArea(rF,areaF)
+  AsignarArea(r1,cuadrante)
+  AsignarArea(r2,cuadrante)
+  AsignarArea(r3,cuadrante)
+  AsignarArea(r4,cuadrante)
+  Iniciar(r1,25,1)
+  Iniciar(r2,30,1)
+  Iniciar(r3,35,1)
+  Iniciar(r4,40,1)
+  Iniciar(rF,1,1)    
+fin
