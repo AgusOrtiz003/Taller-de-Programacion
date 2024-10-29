@@ -5,8 +5,11 @@ procesos
     repetir 3
       derecha
   fin
-  proceso escalonF(ES indice:numero;ES f:numero)
+  proceso escalonF(ES indice:numero;ES f:numero;E id:numero)
+  variables
+    llegue:boolean
   comenzar
+    llegue:=F
     repetir indice
       juntarFlores(f)
       mover
@@ -15,57 +18,43 @@ procesos
       juntarFlores(f)
       mover
       si((PosAv==15)&&(PosCa==16))
-        BloquearEsquina(16,16)
+        metaF(id,llegue,f)
+    si(llegue)
+      EnviarMensaje(rJ,llegue)
+      EnviarMensaje(rJ,id)
+      LiberarEsquina(16,16)
+      izquierda
     izquierda
     indice:=indice-1
   fin
   proceso escalonP(ES indice:numero;ES p:numero)
+  variables
+    llegue:boolean
   comenzar
-    repetir indice
-      juntarPapeles(p)
-      mover
-    derecha
+    llegue:=F
     repetir indice
       juntarPapeles(p)
       mover
     izquierda
+    repetir indice
+      juntarPapeles(p)
+      mover
+      si((PosAv==17)&&(PosCa==16))
+        llegue:=V
+        BloquearEsquina(16,16)
+     si(llegue)
+       EnviarMensaje(rJ,llegue)
+       EnviarMensaje(rJ,id)
+       LiberarEsquina(16,16)
+       derecha
+    derecha
     indice:=indice-1
   fin
 areas
-  areaJ:AreaP(15,1,15,1)
-  areaCentral:AreaPC(16,16,16,16)
-  A1:AreaP(1,1,1,5)
-  A2:AreaP(1,6,5,6)
-  A3:AreaP(6,6,6,9)
-  A4:AreaP(6,10,10,9)
-  A5:AreaP(10,10,10,12)
-  A6:AreaP(10,13,12,13)
-  A7:AreaP(13,13,13,14)
-  A8:AreaP(13,15,14,15)
-  A9:AreaP(14,15,15,16)
-  A10:AreaP(13,16,14,16)
-  A11:AreaP(13,17,13,18)
-  A12:AreaP(10,18,12,18)
-  A13:AreaP(10,19,10,20)
-  A14:AreaP(6,21,10,21)
-  A15:AreaP(6,22,6,25)
-  A16:AreaP(1,25,5,25)
-  A17:AreaP(1,26,1,30)
-  B1:AreaP(31,1,31,5)
-  B2:AreaP(26,6,31,6)
-  B3:AreaP(26,7,26,9)
-  B4:AreaP(22,10,26,10)
-  B5:AreaP(22,11,22,13)
-  B6:AreaP(19,13,22,13)
-  B7:AreaP(19,14,19,15)
-  B8:AreaP(17,16,19,16)
-  B9:AreaP(19,17,19,18)
-  B10:AreaP(20,18,22,18)
-  B11:AreaP(22,19,22,21)
-  B12:AreaP(22,22,25,22)
-  B13:AreaP(26,23,26,26)
-  B14:AreaP(27,26,31,26)
-  B15:AreaP(31,27,31,31)
+  areaJ:AreaP(16,1,16,1)
+  areaF:AreaP(1,1,15,31)
+  areaP:AreaP(17,1,31,31)
+  meta:AreaPC(16,16,16,16)
 robots
   robot robotF
   variables
@@ -77,10 +66,9 @@ robots
       indice:=5
       mientras(indice>0)
         escalonF(indice,f)
-      izquierda
   fin
 variables
-  R_info: robot1
+  
 comenzar
   AsignarArea(R_info, ciudad)
   Iniciar(R_info, 1,1)
