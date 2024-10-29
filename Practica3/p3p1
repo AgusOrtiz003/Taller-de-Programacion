@@ -1,10 +1,9 @@
-programa p3p1
+programa p3p2
 procesos
-  proceso juntarPapeles(ES p:numero)
+  proceso izquierda
   comenzar
-    mientras(HayPapelEnLaEsquina)
-      tomarPapel
-      p:=p+1
+    repetir 3
+      derecha
   fin
   proceso juntarFlores(ES f:numero)
   comenzar
@@ -12,85 +11,153 @@ procesos
       tomarFlor
       f:=f+1
   fin
-  
-  proceso intentoPapelero(ES p:numero;E avI:numero;E caI:numero)
-  variables
-    av:numero
-    ca:numero
+  proceso juntarPapeles(ES p:numero)
   comenzar
-    Random(av,6,10)
-    Random(ca,1,9)
-    BloquearEsquina(av,ca)
-    Pos(av,ca)
-    juntarPapeles(p)
-    Pos(avI,caI)
-    LiberarEsquina(av,ca)
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
   fin
-  proceso intentoFlorero(ES f:numero;E avI:numero;E caI:numero)
+  proceso escalonF(ES indice:numero;ES f:numero;E id:numero)
   variables
-    av:numero
-    ca:numero
+    llegue:boolean
   comenzar
-    Random(av,1,5)
-    Random(ca,1,10)
-    BloquearEsquina(av,ca)
-    Pos(av,ca)
-    juntarFlores(f)
-    Pos(avI,caI)
-    LiberarEsquina(av,ca)
+    llegue:=F
+    repetir indice
+      juntarFlores(f)
+      mover
+    derecha
+    repetir indice
+      juntarFlores(f)
+      si((PosAv=15)&(PosCa=16))
+        llegue:=V
+        BloquearEsquina(16,16)
+        mover
+        EnviarMensaje(id,rJ)
+        repetir 2
+          izquierda
+      sino
+        mover
+    si(~llegue)
+      izquierda
+    sino
+      mover
+      LiberarEsquina(16,16)
+    indice:=indice-1
+  fin
+  proceso escalonP(ES indice:numero;ES p:numero;E id:numero)
+  variables
+    llegue:boolean
+  comenzar
+    llegue:=F
+    repetir indice
+      juntarPapeles(p)
+      mover
+    izquierda
+    repetir indice
+      juntarPapeles(p)
+      si((PosAv=17)&(PosCa=16))
+        llegue:=V
+        BloquearEsquina(16,16)
+        mover
+        juntarPapeles(p)
+        EnviarMensaje(id,rJ)
+        repetir 2
+          derecha
+      sino
+        mover
+    si(~llegue)
+      derecha
+    sino
+      mover
+      LiberarEsquina(16,16)
+    indice:=indice-1
+  fin
+  proceso escalon2P(ES indice:numero;ES p:numero)
+  comenzar
+    indice:=indice+1
+    repetir indice
+      juntarPapeles(p)
+      mover
+    izquierda
+    repetir indice
+      juntarPapeles(p)
+      mover
+    derecha
+  fin
+  proceso escalon2F(ES indice:numero;ES f:numero)
+  comenzar
+    indice:=indice+1
+    repetir indice
+      juntarFlores(f)
+      mover
+    derecha
+    repetir indice
+      juntarFlores(f)
+      mover
+    izquierda 
   fin
 areas
-  areaFloreros:AreaPC(1,1,5,10)
-  areaPapeleros:AreaPC(6,1,10,9)
-  area1:AreaP(6,10,6,10)
-  area2:AreaP(7,10,7,10)
-  area3:AreaP(8,10,8,10)
-  area4:AreaP(9,10,9,10)
+  areaJ:AreaP(16,1,16,1)
+  areaF:AreaP(1,1,15,31)
+  areaP:AreaP(17,1,31,31)
+  meta:AreaPC(16,16,16,16)
 robots
-  robot Florero
+  robot robotF
   variables
-    f:numero
-    avI:numero
-    caI:numero
+    indice,id,f:numero
   comenzar
-    avI:=PosAv
-    caI:=PosCa
+    RecibirMensaje(id,rJ)
+    f:=0
+    indice:=5
     repetir 5
-      f:=0
-      intentoFlorero(f,avI,caI)
-      repetir f
-        depositarFlor
+      escalonF(indice,f,id)
+    indice:=1
+    repetir 4
+      escalon2F(indice,f)
+    EnviarMensaje(id,rJ)
+    repetir f
+      depositarFlor
   fin
-  robot Papelero
+  robot robotP
   variables
-    p:numero
-    avI:numero
-    caI:numero
+    indice,id,p:numero
   comenzar
-    avI:=PosAv
-    caI:=PosCa
+    RecibirMensaje(id,rJ)
+    p:=0
+    indice:=5
+    repetir 5
+      escalonP(indice,p,id)
+    indice:=1
+    repetir 4
+      escalon2P(indice,p)
+    EnviarMensaje(id,rJ)
+    repetir p
+      depositarPapel
+  fin
+  robot robotJ
+  variables
+    id,ganador:numero
+  comenzar
+    id:=1
+    EnviarMensaje(id,r1)
+    EnviarMensaje((id+1),r2)
+    RecibirMensaje(id,*)
+    ganador:=id
     repetir 3
-      p:=0
-      intentoPapelero(p,avI,caI)
-      repetir p
-        depositarPapel
+      RecibirMensaje(id,*)
+    Informar('El ganador es el ',ganador)
   fin
 variables
-  robot1:Florero
-  robot2:Florero
-  robot3:Papelero
-  robot4:Papelero
+  r1:robotF
+  r2:robotP
+  rJ:robotJ
 comenzar
-  AsignarArea(robot1,areaFloreros)
-  AsignarArea(robot1,area1)
-  AsignarArea(robot2,areaFloreros)
-  AsignarArea(robot2,area2)
-  AsignarArea(robot3,areaPapeleros)
-  AsignarArea(robot3,area3)
-  AsignarArea(robot4,areaPapeleros)
-  AsignarArea(robot4,area4)
-  Iniciar(robot1,6,10)
-  Iniciar(robot2,7,10)
-  Iniciar(robot3,8,10)
-  Iniciar(robot4,9,10)
+  AsignarArea(r1, areaF)
+  AsignarArea(r1,meta)
+  AsignarArea(r2,areaP)
+  AsignarArea(r2,meta)
+  AsignarArea(rJ,areaJ)
+  Iniciar(r1,1,1)
+  Iniciar(r2,31,1)
+  Iniciar(rJ,16,1)
 fin
