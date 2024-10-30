@@ -1,0 +1,90 @@
+programa p3p5
+procesos
+  proceso EnviarIds(E id:numero)
+  comenzar
+    EnviarMensaje(id,r1)
+    EnviarMensaje((id+1),r2)
+    EnviarMensaje((id+2),r3)
+    EnviarMensaje((id+3),r4)
+  fin
+  proceso actualizarMax(ES maxca:numero;ES maxid:numero;ES id:numero)
+  variables
+    ca:numero
+  comenzar
+    RecibirMensaje(id,*)
+    si(id=1)
+      RecibirMensaje(ca,r1)
+    sino
+      si(id=2)
+        RecibirMensaje(ca,r2)
+      sino
+        si(id=3)
+          RecibirMensaje(ca,r3)
+        sino
+          RecibirMensaje(ca,r4)
+    si(ca>maxca)
+      maxid:=id
+      maxca:=ca
+  fin
+areas
+  area1:AreaP(4,1,4,100)
+  area2:AreaP(6,1,6,100)
+  area3:AreaP(8,1,8,100)
+  area4:AreaP(10,1,10,100)
+  fuente:AreaPC(11,11,11,11)
+  areaC:AreaP(7,100,7,100)
+robots
+  robot Corredor
+  variables
+    id,avI,ca:numero
+    sigo:boolean
+  comenzar
+    sigo:=V
+    avI:=PosAv
+    RecibirMensaje(id,rC)
+    mientras(sigo)
+      ca:=PosCa
+      BloquearEsquina(11,11)
+      Pos(11,11)
+      si(HayPapelEnLaEsquina)
+        tomarPapel
+      sino
+        sigo:=F
+      Pos(avI,ca)
+      LiberarEsquina(11,11)
+      si(HayPapelEnLaBolsa)
+        depositarPapel
+        mover
+    EnviarMensaje(id,rC)
+    EnviarMensaje(ca,rC)  
+  fin
+  robot Coordinador
+  variables
+    maxca,maxid,id:numero
+  comenzar
+    id:=1
+    maxca:=-1
+    EnviarIds(id)
+    repetir 4
+      actualizarMax(maxca,maxid,id)
+    Informar('El que llego mas lejos fue',maxid)
+  fin
+variables
+  r1,r2,r3,r4:Corredor
+  rC:Coordinador
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(r4,area4)
+  AsignarArea(r1,fuente)
+  AsignarArea(r2,fuente)
+  AsignarArea(r3,fuente)
+  AsignarArea(r4,fuente)
+  AsignarArea(rC,areaC)
+  Iniciar(r1,4,1)
+  Iniciar(r2,6,1)
+  Iniciar(r3,8,1)
+  Iniciar(r4,10,1)
+  Iniciar(rC,7,100)
+fin
