@@ -18,11 +18,10 @@ areas
 robots
   robot florero
   variables
-    f,id,avI,caI:numero
+    id,avI,caI:numero
     listo:boolean
   comenzar
     listo:=F
-    f:=0
     avI:=PosAv
     caI:=PosCa
     RecibirMensaje(id,rC)
@@ -31,11 +30,16 @@ robots
       Pos(10,10)
       si(~HayFlorEnLaEsquina)
         listo:=V
+        Pos(avI,caI)
+        LiberarEsquina(10,10)
       sino
         tomarFlor
-        f:=f+1
-      Pos(avI,caI)
-      LiberarEsquina(10,10)
+        BloquearEsquina(11,11)
+        Pos(11,11)
+        LiberarEsquina(10,10)
+        depositarFlor
+        Pos(avI,caI)
+        LiberarEsquina(11,11)
     EnviarMensaje(id,rC)    
   fin
   robot coordinador
@@ -46,7 +50,8 @@ robots
     EnviarIds(id)
     repetir 4
       RecibirMensaje(id,*)
-    Pos(10,10)
+    Informar('El ultimo en finalizar fue ',id)
+    Pos(11,11)
     mientras(HayFlorEnLaEsquina)
       tomarFlor    
   fin
