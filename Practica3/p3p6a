@@ -1,0 +1,188 @@
+programa p3p6a SOY DOWN ERA EL PERÍMETRO NO EL ÁREA
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso juntarPapeles(ES p:numero)
+  comenzar
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      p:=p+1
+  fin
+  proceso recorrerAvF(ES f:numero)
+  variables
+    av,ca:numero
+  comenzar
+    ca:=PosCa
+    repetir 6
+      ca:=ca+1
+      si(PosAv>4&PosCa>4)
+        BloquearEsquina(PosAv,ca)
+        juntarFlores(f)
+        mover
+        LiberarEsquina(PosAv,ca)
+      sino
+        juntarFlores(f)
+        mover
+  fin
+  proceso recorrerAvP(ES p:numero)
+  variables
+    ca:numero
+  comenzar
+    ca:=PosCa
+    repetir 7
+      ca:=ca+1
+      si(PosAv>8&ca>8)
+        BloquearEsquina(PosAv,ca)
+        mover
+        juntarPapeles(p)
+        LiberarEsquina(PosAv,ca)
+      sino
+        juntarPapeles(p)
+        mover
+  fin
+  proceso recorrerAvFP(ES f:numero;ES p:numero)
+  variables
+    ca:numero
+  comenzar
+    ca:=PosCa
+    repetir 10
+      ca:=ca+1
+      si(PosAv<11&ca<11)
+        BloquearEsquina(PosAv,ca)
+        
+      juntarFlores(f)
+      juntarPapeles(p)
+      mover
+  fin
+areas
+  areaCuadrantes:AreaPC(2,2,16,16)
+  areaF:AreaP(1,1,1,1)
+  av20:AreaPC(1,20,100,20)
+  av21:AreaPC(1,21,100,21)
+  av22:AreaPC(1,22,100,22)
+robots
+  robot robot1
+  variables
+    f,id,ca:numero
+  comenzar
+    RecibirMensaje(id,rF)
+    f:=0
+    repetir 5
+      recorrerAvF(f)
+      Pos(PosAv+1,PosCa-5)
+    recorrerAvF(f)
+    EnviarMensaje(id,rF)
+    RecibirMensaje(ca,rF)
+    Pos(1,ca)
+    derecha
+    mientras(HayFlorEnLaBolsa&PosCa>100)
+      depositarFlor
+      mover
+  fin
+  robot robot2
+  variables
+    f,p,id,ca:numero
+    sigo:boolean
+  comenzar
+    RecibirMensaje(id,rF)
+    f:=0
+    p:=0
+    repetir 9
+      recorrerAvFP(f,p)
+      Pos(PosAv+1,PosCa-9)
+    recorrerAvFP(f,p)
+    EnviarMensaje(id,rF)
+    RecibirMensaje(ca,rF)
+    Pos(1,ca)
+    derecha
+    sigo:=V
+    mientras(sigo&PosCa>100)
+      si(HayFlorEnLaBolsa)
+        depositarFlor
+      si(HayPapelEnLaBolsa)
+        depositarPapel
+      mover
+      sigo:=(HayPapelEnLaBolsa|HayFlorEnLaBolsa)
+  fin
+  robot robot3
+  variables
+    p,id,ca:numero
+  comenzar
+    RecibirMensaje(id,rF)
+    p:=0
+    repetir 6
+      recorrerAvP(p)
+      Pos(PosAv+1,PosCa-6)
+    recorrerAvP(p)
+    EnviarMensaje(id,rF)
+    RecibirMensaje(ca,rF)
+    Pos(1,ca)
+    derecha
+    mientras(HayPapelEnLaBolsa&PosCa<100)
+      depositarPapel
+      mover
+  fin
+  robot Fiscalizador
+  variables
+    id,ca,recibidos:numero
+  comenzar
+    id:=1
+    recibidos:=0
+    EnviarIds(id)
+    repetir 3
+      RecibirMensaje(id,*)
+      recibidos:=recibidos+1
+      si(id=1)
+        si(recibidos=1)
+          EnviarMensaje(20,r1)
+        sino
+          si(recibidos=2)
+            EnviarMensaje(21,r1)
+          sino
+            EnviarMensaje(22,r1)
+      sino
+        si(id=2)
+          si(recibidos=1)
+            EnviarMensaje(20,r1)
+          sino
+            si(recibidos=2)
+              EnviarMensaje(21,r2)
+            sino
+              EnviarMensaje(22,r2)
+        sino
+          si(recibidos=1)
+            EnviarMensaje(20,r3)
+          sino
+            si(recibidos=2)
+              EnviarMensaje(21,r3)
+            sino
+              EnviarMensaje(22,r3)
+  fin  
+variables
+  r1:robot1
+  r2:robot2
+  r3:robot3
+  rF:Fiscalizador
+comenzar
+  AsignarArea(r1,areaCuadrantes)
+  AsignarArea(r2,areaCuadrantes)
+  AsignarArea(r3,areaCuadrantes)
+  AsignarArea(rF,areaF)
+  AsignarArea(r1,av20)
+  AsignarArea(r1,av21)
+  AsignarArea(r1,av22)
+  AsignarArea(r2,av20)
+  AsignarArea(r2,av21)
+  AsignarArea(r2,av22)
+  AsignarArea(r3,av20)
+  AsignarArea(r3,av21)
+  AsignarArea(r3,av22)
+  Iniciar(r1,2,2)
+  Iniciar(r2,5,5)
+  Iniciar(r3,9,9)
+  Iniciar(rF,1,1)
+fin
