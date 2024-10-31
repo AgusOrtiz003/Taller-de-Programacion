@@ -1,5 +1,8 @@
-programa p3p6a SOY DOWN ERA EL PERÍMETRO NO EL ÁREA
+programa p3p6a
 procesos
+  proceso EnviarIds(ES id:numero)
+  comenzar
+  fin
   proceso juntarFlores(ES f:numero)
   comenzar
     mientras(HayFlorEnLaEsquina)
@@ -14,46 +17,56 @@ procesos
   fin
   proceso recorrerAvF(ES f:numero)
   variables
-    av,ca:numero
+    ca:numero
+    bloquee:boolean
   comenzar
     ca:=PosCa
+    bloquee:=F
     repetir 6
+      si(bloquee)
+        LiberarEsquina(PosAv,PosCa-1)
+        bloquee:=F
       ca:=ca+1
-      si(PosAv>4&PosCa>4)
-        BloquearEsquina(PosAv,ca)
-        juntarFlores(f)
-        mover
-        LiberarEsquina(PosAv,ca)
-      sino
-        juntarFlores(f)
-        mover
+      si(PosAv=8&PosCa=4)
+        BloquearEsquina(8,5)
+        bloquee:=V
+      juntarFlores(f)
+      mover
   fin
   proceso recorrerAvP(ES p:numero)
   variables
     ca:numero
+    bloquee:boolean
   comenzar
     ca:=PosCa
+    bloquee:=F
     repetir 7
+      si(bloquee)
+        LiberarEsquina(PosAv,ca)
+        bloquee:=F
       ca:=ca+1
       si(PosAv>8&ca>8)
         BloquearEsquina(PosAv,ca)
-        mover
-        juntarPapeles(p)
-        LiberarEsquina(PosAv,ca)
-      sino
-        juntarPapeles(p)
-        mover
+        bloquee:=V      
+      juntarPapeles(p)
+      mover
   fin
   proceso recorrerAvFP(ES f:numero;ES p:numero)
   variables
     ca:numero
+    bloquee:boolean
   comenzar
     ca:=PosCa
+    bloquee:=F
     repetir 10
+      si(bloquee)
+        LiberarEsquina(PosAv,ca)
+        bloquee:=F
       ca:=ca+1
       si(PosAv<11&ca<11)
         BloquearEsquina(PosAv,ca)
-        
+        bloquee:=V
+      mover
       juntarFlores(f)
       juntarPapeles(p)
       mover
@@ -71,10 +84,9 @@ robots
   comenzar
     RecibirMensaje(id,rF)
     f:=0
-    repetir 5
+    repetir 4
       recorrerAvF(f)
-      Pos(PosAv+1,PosCa-5)
-    recorrerAvF(f)
+      derecha
     EnviarMensaje(id,rF)
     RecibirMensaje(ca,rF)
     Pos(1,ca)
@@ -91,10 +103,9 @@ robots
     RecibirMensaje(id,rF)
     f:=0
     p:=0
-    repetir 9
+    repetir 4
       recorrerAvFP(f,p)
-      Pos(PosAv+1,PosCa-9)
-    recorrerAvFP(f,p)
+      derecha
     EnviarMensaje(id,rF)
     RecibirMensaje(ca,rF)
     Pos(1,ca)
@@ -114,10 +125,9 @@ robots
   comenzar
     RecibirMensaje(id,rF)
     p:=0
-    repetir 6
+    repetir 4
       recorrerAvP(p)
-      Pos(PosAv+1,PosCa-6)
-    recorrerAvP(p)
+      derecha
     EnviarMensaje(id,rF)
     RecibirMensaje(ca,rF)
     Pos(1,ca)
