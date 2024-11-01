@@ -1,0 +1,76 @@
+programa p4p2
+areas
+  areaC1:AreaP(11,1,11,1)
+  areaC2:AreaP(12,1,12,1)
+  areaP1:AreaP(5,1,5,100)
+  areaP2:AreaP(10,1,10,100)
+  pozo:AreaC(50,50,50,50)
+robots
+  robot Productor
+  variables
+    p,avI,caI:numero
+  comenzar
+    p:=0
+    avI:=PosAv
+    caI:=PosCa
+    mientras(PosCa<100)
+      mientras((HayPapelEnLaEsquina)&(p<>5))
+        tomarPapel
+        p:=p+1
+      si(p=5)
+        BloquearEsquina(50,50)
+        Pos(50,50)
+        repetir 5
+          depositarPapel
+        p:=0
+        Pos(avI,caI)
+        LiberarEsquina(50,50)
+      mover          
+  fin
+  robot Consumidor
+  variables
+    p,cant,avI,caI,intentos:numero
+    traigo:boolean
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    intentos:=0
+    mientras(intentos<8)
+      Random(p,2,5)
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      si(HayPapelEnLaEsquina)
+        cant:=0
+        mientras((HayPapelEnLaEsquina)&(cant<p))
+          tomarPapel
+          cant:=cant+1
+        traigo:=(cant=p)
+        si(~traigo)
+          repetir cant
+            depositarPapel
+        Pos(avI,caI)
+      sino
+        intentos:=intentos+1
+      LiberarEsquina(50,50)
+      si(traigo)
+        repetir p
+          depositarPapel
+        intentos:=0
+  fin 
+variables
+  p1,p2:Productor
+  c1,c2:Consumidor
+comenzar
+  AsignarArea(p1,areaP1)
+  AsignarArea(p2,areaP2)
+  AsignarArea(c1,areaC1)
+  AsignarArea(c2,areaC2)
+  AsignarArea(p1,pozo)
+  AsignarArea(p2,pozo)
+  AsignarArea(c1,pozo)
+  AsignarArea(c2,pozo)
+  Iniciar(p1,5,1)
+  Iniciar(p2,10,1)
+  Iniciar(c1,11,1)
+  Iniciar(c2,12,1)
+fin
