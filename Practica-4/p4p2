@@ -1,4 +1,20 @@
 programa p4p2
+procesos
+  proceso juntarPapeles(E
+  comenzar
+    mientras((HayPapelEnLaEsquina)&(p<5))
+        tomarPapel
+        p:=p+1
+      si(p=5)
+        caI:=PosCa
+        BloquearEsquina(50,50)
+        Pos(50,50)
+        repetir 5
+          depositarPapel
+        p:=0
+        Pos(avI,caI)
+        LiberarEsquina(50,50)
+  fin
 areas
   areaC1:AreaP(11,1,11,1)
   areaC2:AreaP(12,1,12,1)
@@ -14,10 +30,11 @@ robots
     avI:=PosAv
     caI:=PosCa
     mientras(PosCa<100)
-      mientras((HayPapelEnLaEsquina)&(p<>5))
+      mientras((HayPapelEnLaEsquina)&(p<5))
         tomarPapel
         p:=p+1
       si(p=5)
+        caI:=PosCa
         BloquearEsquina(50,50)
         Pos(50,50)
         repetir 5
@@ -48,9 +65,10 @@ robots
         si(~traigo)
           repetir cant
             depositarPapel
-        Pos(avI,caI)
+          intentos:=intentos+1
       sino
         intentos:=intentos+1
+      Pos(avI,caI)
       LiberarEsquina(50,50)
       si(traigo)
         repetir p
