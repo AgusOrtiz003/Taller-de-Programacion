@@ -1,0 +1,98 @@
+programa p5p2
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso recorrer10(ES f:numero)    
+  comenzar
+    repetir 10
+      juntarFlores(f)
+      si(PosAv<100)
+        mover
+  fin
+  proceso depositar(ES f:numero)
+  variables
+    avI,caI:numero
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    BloquearEsquina(50,50)
+    Pos(50,50)
+    repetir f
+      depositarFlor
+    f:=0
+    Pos(avI,caI)
+    LiberarEsquina(50,50)
+  fin
+  proceso esperar
+  variables
+    ok:boolean
+  comenzar
+    si(PosCa=1)
+      EnviarMensaje(V,r2)
+      EnviarMensaje(V,r3)
+      RecibirMensaje(ok,r2)
+      RecibirMensaje(ok,r3)
+    sino
+      si(PosCa=2)
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r3)
+        RecibirMensaje(ok,r1)
+        RecibirMensaje(ok,r3)
+      sino
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r2)
+        RecibirMensaje(ok,r1)
+        RecibirMensaje(ok,r2)
+  fin
+areas
+  area1:AreaP(1,1,100,1)
+  area2:AreaP(1,2,100,2)
+  area3:AreaP(1,3,100,3)
+  pozo:AreaC(50,50,50,50)
+  areaF:AreaP(1,4,1,4)
+robots
+  robot Recolector
+  variables
+    f:numero
+  comenzar
+    f:=0
+    derecha
+    mientras(PosAv<100)
+      recorrer10(f)
+      depositar(f)
+      esperar
+    EnviarMensaje(V,rF)
+  fin
+  robot Fiscalizador
+  variables
+    total:numero
+    ok:boolean
+  comenzar
+    total:=0
+    repetir 3
+      RecibirMensaje(ok,*)
+    Pos(50,50)
+    juntarFlores(total)
+    Informar('El total es de ',total)      
+  fin
+variables
+  r1,r2,r3:Recolector
+  rF:Fiscalizador
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(rF,areaF)
+  AsignarArea(r1,pozo)
+  AsignarArea(r2,pozo)
+  AsignarArea(r3,pozo)
+  AsignarArea(rF,pozo)
+  Iniciar(r1,1,1)
+  Iniciar(r2,1,2)
+  Iniciar(r3,1,3)
+  Iniciar(rF,1,4)
+fin
