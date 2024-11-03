@@ -1,4 +1,4 @@
-programa p5p1
+programa p5p1  {preguntar si están bien bloqueadas las esquinas}
 procesos
   proceso juntarFlores(ES f:numero)
   comenzar
