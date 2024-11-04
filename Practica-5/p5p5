@@ -1,0 +1,88 @@
+programa p5p5
+procesos
+  proceso recolectarPapeles(E p:numero)
+  variables
+    avI,caI:numero
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    repetir p
+      BloquearEsquina(100,1) {deberian bloquear y desbloquear no? sino no es concurrente}
+      Pos(100,1)
+      tomarPapel
+      Pos(avI,caI)
+      LiberarEsquina(100,1)
+      depositarPapel
+  fin
+  proceso realizarPedido (E id:numero)
+  variables
+    p:numero
+  comenzar
+    Random(p,1,5)
+    depositarPapeles(p)
+    si(id=1)
+      EnviarMensaje(p,r1)
+    sino
+      si(id=2)
+        EnviarMensaje(p,r2)
+      sino
+        EnviarMensaje(p,r3)
+  fin
+  proceso depositarPapeles(E p:numero)
+  variables
+    avI,caI:numero
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    BloquearEsquina(100,1)
+    Pos(100,1)
+    repetir p
+      depositarPapel
+    Pos(avI,caI)
+    LiberarEsquina(100,1)
+  fin
+areas
+  area1:AreaP(10,1,10,1)
+  area2:AreaP(11,1,11,1)
+  area3:AreaP(12,1,12,1)
+  areaS:AreaP(13,1,13,1)
+  deposito:AreaC(100,1,100,1)
+robots
+  robot Cliente
+  variables
+    id,p:numero
+  comenzar
+    RecibirMensaje(id,rS)
+    repetir 4
+      EnviarMensaje(id,rS)
+      RecibirMensaje(p,rS)
+      recolectarPapeles(p)
+  fin
+  robot Servidor
+  variables
+    id:numero
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    repetir 12
+      RecibirMensaje(id,*)
+      realizarPedido(id)
+  fin
+variables
+  r1,r2,r3:Cliente
+  rS:Servidor
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(rS,areaS)
+  AsignarArea(r1,deposito)
+  AsignarArea(r2,deposito)
+  AsignarArea(r3,deposito)
+  AsignarArea(rS,deposito)
+  Iniciar(r1,10,1)
+  Iniciar(r2,11,1)
+  Iniciar(r3,12,1) 
+  Iniciar(rS,13,1) 
+fin
