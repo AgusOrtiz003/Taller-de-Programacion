@@ -1,0 +1,153 @@
+{Existen 4 robots recolectores y un robot jefe. Los robots recolectores deben juntar las flores y papeles de un área en común, en cinco intentos. Para realizar esta tarea eligen una esquina al azar dentro del área, se posicionan y toman los papeles y flores. Cada vez que juntan una flor o papel de esa esquina le avisan al jefe. Al terminar de juntar los papeles y flores vuelve a su esquina original.}
+
+{El jefe va recibiendo los avisos de los robots recolectores y cuando todos terminan les avisa quién juntó más papeles y flores. El robot recolector que ms juntó debe depositarlos en su esquina original}
+
+{Notas: El área común está delimitada por la esquina inferior izquierda (45,48) y la superior derecha (62,69).}
+{El robot recolector1 se posiciona inicialmente en la esquina(10,10)}
+{El robot recolector2 se posiciona inicialmente en la esquina(11,10)}
+{El robot recolector1 se posiciona inicialmente en la esquina(12,10)}
+{El robot recolector1 se posiciona inicialmente en la esquina(13,10)}
+{El robot jefe se posiciona inicialmente en la esquina(1,1)}
+programa parcial_1
+procesos
+  proceso avisarMax(E maxid:numero)
+  comenzar
+    si(maxid=1)
+      EnviarMensaje(V,r1)
+      EnviarMensaje(F,r2)
+      EnviarMensaje(F,r3)
+      EnviarMensaje(F,r4)
+    sino
+      si(maxid=2)
+        EnviarMensaje(F,r1)
+        EnviarMensaje(V,r2)
+        EnviarMensaje(F,r3)
+        EnviarMensaje(F,r4)
+      sino
+        si(maxid=3)
+          EnviarMensaje(F,r1)
+          EnviarMensaje(F,r2)
+          EnviarMensaje(V,r3)
+          EnviarMensaje(F,r4)
+        sino
+          EnviarMensaje(F,r1)
+          EnviarMensaje(F,r2)
+          EnviarMensaje(F,r3)
+          EnviarMensaje(V,r4)
+  fin
+  proceso vaciarBolsa
+  comenzar
+    mientras(HayFlorEnLaBolsa)
+      depositarFlor
+    mientras(HayPapelEnLaBolsa)
+      depositarPapel
+  fin
+  proceso identificarRobots
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4) 
+  fin
+  proceso limpiarEsquina(E id:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      EnviarMensaje(id,rJ)
+    mientras(HayPapelEnLaEsquina)
+      tomarPapel
+      EnviarMensaje(id,rJ)
+  fin
+  proceso limpiarEsquinaRandom(E id:numero)
+  variables
+    avI,caI,av,ca:numero
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    Random(av,45,62)
+    Random(ca,48,69)
+    BloquearEsquina(av,ca)
+    Pos(av,ca)
+    limpiarEsquina(id)
+    Pos(avI,caI)
+    LiberarEsquina(av,ca)
+  fin
+areas
+  area1:AreaP(10,10,10,10)
+  area2:AreaP(11,10,11,10)
+  area3:AreaP(12,10,12,10)
+  area4:AreaP(13,10,13,10)
+  areaJ:AreaP(1,1,1,1)
+  areaComun:AreaPC(45,48,62,69)
+robots
+  robot Recolector
+  variables
+    id:numero
+    soyMax:boolean
+  comenzar
+    RecibirMensaje(id,rJ)
+    repetir 5 {tiene 5 intentos cada uno, o son 5 en total entre los 4?}
+      limpiarEsquinaRandom(id)
+    EnviarMensaje(0,rJ)
+    RecibirMensaje(soyMax,rJ)
+    si(soyMax)
+      vaciarBolsa
+  fin  
+  robot Jefe
+  variables
+    id,tot1,tot2,tot3,tot4,max,maxid:numero
+  comenzar
+    tot1:=0
+    tot2:=0
+    tot3:=0
+    tot4:=0
+    max:=-1
+    identificarRobots
+    repetir 4
+      mientras(id<>0)
+        RecibirMensaje(id,*)
+        si(id=1)
+          tot1:=tot1+1
+          si(tot1>max)
+            max:=tot1
+            maxid:=id
+        sino
+          si(id=2)
+            tot2:=tot2+1
+            si(tot2>max)
+              max:=tot2
+              maxid:=id
+          sino
+            si(id=3)
+              tot3:=tot3+1
+              si(tot3>max)
+                max:=tot3
+                maxid:=id
+            sino
+              si(id=4)
+                tot4:=tot4+1
+                si(tot4>max)
+                  max:=tot4
+                  maxid:=id
+    Informar('El que junto mas fue el',maxid)
+    avisarMax(maxid)
+  fin
+variables
+  r1,r2,r3,r4:Recolector
+  rJ:Jefe
+comenzar
+  AsignarArea(r1,area1)
+  AsignarArea(r2,area2)
+  AsignarArea(r3,area3)
+  AsignarArea(r4,area4)
+  AsignarArea(rJ,areaJ)
+  AsignarArea(r1,areaComun)
+  AsignarArea(r2,areaComun)
+  AsignarArea(r3,areaComun)
+  AsignarArea(r4,areaComun)
+  Iniciar(r1,10,10)
+  Iniciar(r2,11,10)
+  Iniciar(r3,12,10)
+  Iniciar(r4,13,10)
+  Iniciar(rJ,1,1)
+fin
