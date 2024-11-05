@@ -1,0 +1,164 @@
+programa parcial2 {me lo pasó santi}
+procesos
+  proceso esperar(E rojo:boolean)
+  variables
+    ok:boolean
+  comenzar
+    si(rojo)
+      RecibirMensaje(ok,RL1)
+      RecibirMensaje(ok,RL2)
+    sino
+      RecibirMensaje(ok,AL1)
+      RecibirMensaje(ok,AL2)
+  fin
+  proceso depositarFlores(E f:numero)
+  variables
+    avI,caI:numero
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    BloquearEsquina(20,20)
+    mover
+    repetir f
+      depositarFlor
+    Pos(avI,caI)
+    LiberarEsquina(20,20)
+  fin
+  proceso izquierda
+  comenzar
+    repetir 3
+      derecha
+  fin
+  proceso avisar(E rojo:boolean)
+  comenzar
+    si(rojo)
+      EnviarMensaje(V,RC)
+    sino
+      EnviarMensaje(V,AC)
+  fin
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso rotar(ES rojo:boolean)
+  comenzar
+    rojo:=(PosAv=9)
+    si(rojo)
+      derecha
+    sino
+      izquierda
+  fin
+  proceso moverFlores
+  variables
+    av,ca,f:numero
+    arriba:boolean
+  comenzar
+    f:=0
+    av:=PosAv
+    ca:=PosCa
+    juntarFlores(f)
+    si(f>0)
+      arriba:=(PosCa=19)
+      si(arriba)
+        BloquearEsquina(av,(ca+1))
+        Pos(av,(ca+1))
+      sino
+        BloquearEsquina(av,(ca-1))
+        Pos(av,(ca-1))
+      repetir f
+        depositarFlor
+      Pos(av,ca)
+      si(arriba)
+        LiberarEsquina(av,(ca+1))
+      sino
+        LiberarEsquina(av,(ca-1))
+  fin
+areas
+  areaR1:AreaP(9,19,19,19)
+  areaRC:AreaPC(10,20,19,20)
+  areaR2:AreaP(9,21,19,21)
+  areaA1:AreaP(21,19,31,19)
+  areaAC:AreaPC(21,20,30,20)
+  areaA2:AreaP(21,21,31,21)
+  inicioRC:AreaP(9,20,9,20)
+  inicioAC:AreaP(31,20,31,20)
+  areaF:AreaP(20,18,20,18)
+  deposito:AreaPC(20,20,20,20)
+robots
+  robot Lateral
+  variables
+    rojo:boolean
+  comenzar
+    rotar(rojo)
+    repetir 9
+      mover
+      moverFlores
+      avisar(rojo)
+  fin
+  robot Central
+  variables
+    f:numero
+    rojo,ok:boolean
+  comenzar
+    f:=0
+    rotar(rojo)
+    repetir 9
+      esperar(rojo)
+      mover
+      juntarFlores(f)
+    mover
+    depositarFlores(f)
+    EnviarMensaje(rojo,rF)
+    EnviarMensaje(f,rF)
+  fin
+  robot Fiscalizador
+  variables
+    cantR,cantA:numero
+    rojo:boolean
+  comenzar
+    RecibirMensaje(rojo,*)
+    si(rojo)
+      Informar('El equipo rojo finalizo primero',rojo)
+      RecibirMensaje(cantR,RC)
+      RecibirMensaje(rojo,AC)
+      RecibirMensaje(cantA,AC)
+    sino
+      Informar('El equipo azul finalizo primero',rojo)
+      RecibirMensaje(cantA,AC)
+      RecibirMensaje(rojo,RC)
+      RecibirMensaje(cantR,RC)
+    si(cantR>=cantA)
+      Informar('El equipo rojo junto mas flores con',cantR)
+    sino
+      Informar('El equipo azul junto mas flores con',cantA)    
+  fin
+variables
+  RL1,RL2,AL1,AL2:Lateral
+  AC,RC:Central
+  rF:Fiscalizador
+comenzar
+  AsignarArea(RC,inicioRC)
+  AsignarArea(AC,inicioAC)
+  AsignarArea(RL1,areaR1)
+  AsignarArea(RL2,areaR2)
+  AsignarArea(RC,areaRC)
+  AsignarArea(RL1,areaRC)
+  AsignarArea(RL2,areaRC)
+  AsignarArea(AL1,areaA1)
+  AsignarArea(AL2,areaA2)
+  AsignarArea(AC,areaAC)
+  AsignarArea(AL1,areaAC)
+  AsignarArea(AL2,areaAC)
+  AsignarArea(RC,deposito)
+  AsignarArea(AC,deposito)
+  AsignarArea(rF,areaF)
+  Iniciar(RC,9,20)
+  Iniciar(AC,31,20)
+  Iniciar(RL1,9,19)
+  Iniciar(AL1,31,19)
+  Iniciar(RL2,9,21)
+  Iniciar(AL2,31,21)
+  Iniciar(rF,20,18)
+fin
