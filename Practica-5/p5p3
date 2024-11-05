@@ -55,7 +55,7 @@ robots
       si(esquinas=15)
         esquinas:=0
       si(f>0)
-        vaciarBolsa {¿tienen que hacerlo cuando terminan?}
+        vaciarBolsa
       EnviarMensaje(V,rC)
     EnviarMensaje(F,rC)
   fin
