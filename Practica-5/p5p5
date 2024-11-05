@@ -8,7 +8,7 @@ procesos
     caI:=PosCa
     repetir p
       BloquearEsquina(100,1) {deberian bloquear y desbloquear no? sino no es concurrente}
-      Pos(100,1)
+      Pos(100,1)              {si}
       tomarPapel
       Pos(avI,caI)
       LiberarEsquina(100,1)
