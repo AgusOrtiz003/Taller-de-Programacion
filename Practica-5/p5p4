@@ -80,8 +80,8 @@ robots
     EnviarMensaje(0,r1)
     EnviarMensaje(0,r2)
     EnviarMensaje(0,r3)
-    repetir 3            {las recibe o las junta el?}
-      RecibirMensaje(f,*){porque esto parece un problema Maestro/Esclavo}
+    repetir 3            
+      RecibirMensaje(f,*)
       total:=total+f 
     Informar('Se juntaron las siguientes flores',total)
   fin
