@@ -1,0 +1,144 @@
+programa parcial3
+procesos
+  proceso identificarRobots
+  comenzar
+    EnviarMensaje(1,rV1)
+    EnviarMensaje(2,rV2)
+    EnviarMensaje(1,rH1)
+    EnviarMensaje(2,rH2)
+  fin
+  proceso posicionar(ES av:numero;E equipo:numero)
+  comenzar
+    si(equipo=1)
+      av:=5
+    sino
+      av:=11
+  fin
+  proceso buscarFlor
+  variables
+    avI,caI:numero
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    BloquearEsquina(15,15)
+    Pos(15,15)
+    tomarFlor
+    Pos(avI,caI)
+    LiberarEsquina(15,15)
+  fin
+  proceso completarEsquinaF
+  comenzar
+    buscarFlor
+    depositarFlor
+  fin
+  proceso completarEsquinaP
+  comenzar
+    buscarPapel
+    depositarPapel
+  fin
+  proceso buscarPapel
+  variables
+    avI,caI:numero
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    BloquearEsquina(15,15)
+    Pos(15,15)
+    tomarPapel
+    Pos(avI,caI)
+    LiberarEsquina(15,15)
+  fin
+areas
+  area1E1:AreaP(50,50,50,50)
+  area2E1:AreaP(51,51,51,51)
+  area1E2:AreaP(52,52,52,52)
+  area2E2:AreaP(53,53,53,53)
+  areaF:AreaP(1,1,1,1)
+  lineaV1:AreaP(5,5,5,17)
+  lineaV2:AreaP(11,5,11,17)
+  unionL1:AreaPC(5,4,5,4)
+  unionL2:AreaPC(11,4,11,4)
+  lineaH1:AreaP(6,4,9,4)
+  lineaH2:AreaP(12,4,15,4)
+  deposito:AreaPC(15,15,15,15)
+robots
+  robot Horizontal
+  variables
+    equipo,av:numero
+  comenzar
+    RecibirMensaje(equipo,rF)
+    posicionar(av,equipo)
+    derecha
+    BloquearEsquina(av,4)
+    Pos(av,4)
+    completarEsquinaF
+    mover
+    LiberarEsquina(av,4)
+    repetir 3
+      completarEsquinaF
+      mover
+    completarEsquinaF
+    si(equipo=1)
+      EnviarMensaje(V,rV1)
+    sino
+      EnviarMensaje(V,rV2)
+  fin
+  robot Vertical
+  variables
+    equipo,av:numero
+    ok:boolean
+  comenzar
+    RecibirMensaje(equipo,rF)
+    posicionar(av,equipo)
+    BloquearEsquina(av,4)
+    Pos(av,4)
+    completarEsquinaP
+    mover
+    LiberarEsquina(av,4)
+    repetir 12
+      completarEsquinaP
+      mover
+    completarEsquinaP
+    si(equipo=1)
+      RecibirMensaje(ok,rH1)
+    sino
+      RecibirMensaje(ok,rH2)
+    EnviarMensaje(equipo,rF)
+  fin
+  robot Fiscalizador
+  variables
+    equipo:numero
+  comenzar
+    identificarRobots
+    RecibirMensaje(equipo,*)
+    Informar('El equipo que llego primero fue el',equipo)
+    RecibirMensaje(equipo,*)
+  fin
+variables
+  rV1,rV2:Vertical
+  rH1,rH2:Horizontal
+  rF:Fiscalizador
+comenzar
+  AsignarArea(rV1,area1E1)
+  AsignarArea(rV2,area1E2)
+  AsignarArea(rH1,area2E1)
+  AsignarArea(rH2,area2E2)
+  AsignarArea(rV1,lineaV1)
+  AsignarArea(rV2,lineaV2)
+  AsignarArea(rH1,lineaH1)
+  AsignarArea(rH2,lineaH2)
+  AsignarArea(rV1,unionL1)
+  AsignarArea(rH1,unionL1)
+  AsignarArea(rV2,unionL2)
+  AsignarArea(rH2,unionL2)
+  AsignarArea(rV1,deposito)
+  AsignarArea(rH1,deposito)
+  AsignarArea(rV2,deposito)
+  AsignarArea(rH2,deposito)
+  AsignarArea(rF,areaF)
+  Iniciar(rV1,50,50)
+  Iniciar(rV2,52,52)
+  Iniciar(rH1,51,51)
+  Iniciar(rH2,53,53)
+  Iniciar(rF,1,1)
+fin
