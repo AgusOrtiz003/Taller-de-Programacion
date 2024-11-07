@@ -1,0 +1,80 @@
+programa parcial4
+procesos
+  proceso juntarFlores
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+  fin
+  proceso pedirEsquina(E id;ES av:numero;ES ca:numero)
+  comenzar
+    EnviarMensaje(id,rF)
+    RecibirMensaje(av,rF)
+    RecibirMensaje(ca,rF)
+  fin
+  proceso realizarEsquina(E av:numero;E ca:numero)
+  variables
+    avI,caI:numero
+  comenzar
+    avI:=PosAv
+    caI:=PosCa
+    BloquearEsquina(av,ca)
+    Pos(av,ca)
+    juntarFlores
+    Pos(avI,caI)
+    LiberarEsquina(av,ca)
+  fin
+  proceso identificarRobots
+  comenzar
+    EnviarMensaje(1,f1)
+    EnviarMensaje(2,f2)
+    EnviarMensaje(3,f3)
+  fin
+  proceso recibirYEnviarEsquina(ES intentos:numero;ES terminados:numero)
+  variables
+    id,av,ca:numero
+  comenzar
+    RecibirMensaje(id,*)
+    si(id=0)
+      terminados:=terminados+1
+    sino
+      Random(av,10,30)
+      Random(ca,10,30)
+      si(id=1)
+        EnviarMensaje(av,f1)
+        EnviarMensaje(ca,f1)
+      sino
+        si(id=2)
+          EnviarMensaje(av,f2)
+          EnviarMensaje(ca,f2)
+        sino
+          EnviarMensaje(av,f3)
+          EnviarMensaje(ca,f3)                
+  fin
+areas
+  
+robots
+  robot Florero
+  variables
+    id,av,ca,n:numero
+  comenzar
+    RecibirMensaje(id,rF)
+    Random(n,2,5)
+    repetir n
+      pedirEsquina(id,av,ca)
+      realizarEsquina(av,ca)
+    EnviarMensaje(0,rF)
+  fin
+  robot Fiscalizador
+  variables
+    terminados,intentos:numero
+  comenzar
+    identificarRobots
+    terminados:=0
+    intentos:=0
+    mientras(terminados<3)
+      recibirYEnviarEsquina(intentos,terminados)
+    Informar('Entre todos hicieron',intentos)          
+  fin
+variables
+comenzar
+fin
