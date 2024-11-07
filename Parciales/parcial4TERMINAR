@@ -5,7 +5,7 @@ procesos
     mientras(HayFlorEnLaEsquina)
       tomarFlor
   fin
-  proceso pedirEsquina(E id;ES av:numero;ES ca:numero)
+  proceso pedirEsquina(E id:numero;ES av:numero;ES ca:numero)
   comenzar
     EnviarMensaje(id,rF)
     RecibirMensaje(av,rF)
@@ -39,6 +39,7 @@ procesos
     sino
       Random(av,10,30)
       Random(ca,10,30)
+      intentos:=intentos+1
       si(id=1)
         EnviarMensaje(av,f1)
         EnviarMensaje(ca,f1)
@@ -51,7 +52,11 @@ procesos
           EnviarMensaje(ca,f3)                
   fin
 areas
-  
+  cuadrante:AreaPC(10,10,30,30)
+  area1:AreaP(1,1,1,1)
+  area2:AreaP(2,1,2,1)
+  area3:AreaP(3,1,3,1)
+  areaF:AreaP(9,9,9,9)
 robots
   robot Florero
   variables
@@ -76,5 +81,18 @@ robots
     Informar('Entre todos hicieron',intentos)          
   fin
 variables
+  f1,f2,f3:Florero
+  rF:Fiscalizador
 comenzar
+  AsignarArea(f1,area1)
+  AsignarArea(f2,area2)
+  AsignarArea(f3,area3)
+  AsignarArea(rF,areaF)
+  AsignarArea(f1,cuadrante)
+  AsignarArea(f2,cuadrante)
+  AsignarArea(f3,cuadrante)
+  Iniciar(f1,1,1)
+  Iniciar(f2,2,1)
+  Iniciar(f3,3,1)
+  Iniciar(rF,9,9)
 fin
