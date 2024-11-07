@@ -1,0 +1,93 @@
+programa parcial_5
+procesos
+  proceso juntarFlores(ES f:numero)
+  comenzar
+    mientras(HayFlorEnLaEsquina)
+      tomarFlor
+      f:=f+1
+  fin
+  proceso recorrer(ES f:numero)
+  comenzar
+    juntarFlores(f)
+    mover
+  fin
+  proceso recorrerEsquinaPeligrosa(E ca:numero;ES f:numero;E id:numero)
+  variables
+    av:numero
+  comenzar
+    av:=PosAv
+    juntarFlores(f)
+    BloquearEsquina(av,ca)
+    mover
+    EnviarMensaje(id,rF)
+    recorrer(f)
+    LiberarEsquina(av,ca)
+  fin
+areas
+  inicio1:AreaP(6,1,6,1)
+  inicioF:AreaP(100,100,100,100)
+  areaCruce:AreaPC(6,2,6,50)
+  areaF1:AreaP(6,51,6,61)
+  areaInicialF2:AreaP(1,2,5,50)
+  areaFinalF2:AreaP(7,2,61,50)
+robots
+  robot Florero
+  variables
+    id,av,ca,f:numero
+  comenzar
+    RecibirMensaje(id,rF)
+    f:=0
+    si(id=2)
+      RecibirMensaje(ca,rF)
+      EnviarMensaje(ca,f1)
+      Pos(1,ca)
+      derecha
+      repetir 4
+        recorrer(f)
+      recorrerEsquinaPeligrosa(ca,f,id)
+      repetir 54
+        recorrer(f)
+    sino
+      RecibirMensaje(ca,f2)
+      mientras(PosCa<ca)
+        recorrer(f)
+      recorrerEsquinaPeligrosa(ca,f,id)
+      mientras(PosCa<61)
+        recorrer(f)
+      juntarFlores(f)            
+    EnviarMensaje(f,rF)
+  fin
+  robot Fiscalizador
+  variables
+    id,pri,f,ca:numero
+  comenzar
+    EnviarMensaje(1,f1)
+    EnviarMensaje(2,f2)
+    Random(ca,2,50)
+    EnviarMensaje(ca,f2)
+    RecibirMensaje(pri,*)
+    RecibirMensaje(id,*)
+    si(pri=1)
+      RecibirMensaje(f,f2)
+      RecibirMensaje(f,f1)
+    sino
+      RecibirMensaje(f,f1)
+      RecibirMensaje(f,f2)
+    Informar('El que llego primero al cruce fue ',pri)
+    Informar('Ese mismo junto',f)
+  fin
+variables
+  f1,f2:Florero
+  rF:Fiscalizador
+comenzar
+  AsignarArea(f1,inicio1)
+  AsignarArea(rF,inicioF)
+  AsignarArea(f1,areaCruce)
+  AsignarArea(f2,areaCruce)
+  AsignarArea(f1,areaF1)
+  AsignarArea(f2,areaInicialF2)
+  AsignarArea(f2,areaFinalF2)
+  Iniciar(f1,6,1)
+  Iniciar(f2,1,2)
+  Iniciar(rF,100,100)
+fin
